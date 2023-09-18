@@ -13,7 +13,10 @@
 
 ## Demo 🎥
 
----
+![Zrzut ekranu 2023-09-18 173357](https://github.com/Szczygiel29/GoMove/assets/116550165/bcc9e6a9-f4a9-425a-9026-53399284353f)
+
+![Zrzut ekranu 2023-09-18 173441](https://github.com/Szczygiel29/GoMove/assets/116550165/0e2c5357-a3a3-478b-8a52-80afcc126531)
+
 
 ## Description 📚
 
