@@ -1,0 +1,71 @@
+.home-page {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    height: calc(95vh - 40px);
+    background: url("../../assets/images/video_running.gif") no-repeat center;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.home-page .delete-activity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background-color: #da0000;
+    cursor: pointer;
+    transition: transform .2s;
+}
+
+.home-page .delete-activity:hover {
+    transform: scale(1.2);
+    transition: transform .2s;
+}
+
+
+.home-page .accept-activity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background-color: #00da00;
+    cursor: pointer;
+    transition: transform .2s;
+}
+
+.home-page .accept-activity:hover{
+    transform: scale(1.2);
+    transition: transform .2s;
+}
+
+.home-page .go-to-search {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: lightgreen;
+    color: #2a2a2a;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: transform .4s ease;
+}
+
+.no-more-activities {
+    display: grid;
+    place-items: center;
+}
+
+.card-activity{
+    overflow: hidden;
+}
+@media screen and (max-width: 768px) {
+.home-page {
+    height: calc(100vh - 140px);
+}
+}

@@ -1,0 +1,58 @@
+.searched-activity-card{
+    width: 380px;
+    height: 180px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+}
+
+.activity-photo{
+    position: relative;
+}
+.activity-photo img{
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    object-fit: cover;
+    width: 180px;
+    height: 180px;
+}
+.info-section{
+    width: 200px;
+}
+.info-section > .activity-title {
+    min-height: 30px;
+    max-height: 30px;
+    border-bottom: 1px solid grey;
+    margin-top:0px;
+    padding: 0px 0;
+}
+.info-section > .activity-type{
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+.activity-city, .activity-date{
+    margin-bottom: 10px;
+}
+.join-button, .details-button{
+    padding: 3px 10px;
+    background-color: lightgreen;
+    width: 70px;
+    height: 30px;
+    border-radius: 3px;
+    border: none;
+    transition: background-color .4s, transform .4s;
+}
+.join-button:hover,.details-button:hover {
+    background-color: #00da00;
+    transform: scale(1.1);
+    transition: background-color .4s, transform .4s;
+}
+.searched-card-buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
