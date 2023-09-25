@@ -96,7 +96,7 @@ function HomePage() {
             card.style.right = '0vw';
             card.style.transform = 'scale(1)';
             fetchNextActivity();
-        }, 500)
+        }, 800)
         card.style.transition = 'transform .5s, right .5s'
         await enrollUserToActivity();
         await fetchNextActivity();
@@ -105,87 +105,87 @@ function HomePage() {
             setShowJoinedActivityModal(false);
         }, 3000)
     };
-const handleDeleteActivity = () => {
-    const card = document.querySelector('.card');
-    card.style.right = '50vw';
-    card.style.transform = 'scale(0)';
-    setTimeout(() => {
-        card.style.transition = 'transform .5s'
-        card.style.right = '0vw';
-        card.style.transform = 'scale(1)';
-    fetchNextActivity();
-    }, 500)
-    card.style.transition = 'transform .5s, right .5s'
-}
+    const handleDeleteActivity = () => {
+        const card = document.querySelector('.card');
+        card.style.right = '50vw';
+        card.style.transform = 'scale(0)';
+        setTimeout(() => {
+            card.style.transition = 'transform .5s'
+            card.style.right = '0vw';
+            card.style.transform = 'scale(1)';
+            fetchNextActivity();
+        }, 500)
+        card.style.transition = 'transform .5s, right .5s'
+    }
     return (
-        <div className='home-page'>
-            <Modal
-                isOpen={showJoinedActivityModal}
-                onRequestClose={() => setShowJoinedActivityModal(false)}
-                contentLabel="joined-activity-modal"
-                style={ModalStyles.joinedActivityModalStyles}
-                className="joined-activity-modal"
-            >
-                <h3>
-                    Succesfully joined to activity!
-                </h3>
-            </Modal>
-            <Modal
-                isOpen={showNoMoreActivitiesModal}
-                onRequestClose={() => setShowNoMoreActivitiesModal(false)}
-                contentLabel="no-more-activities-modal"
-                style={ModalStyles.noMoreActivitiesModalStyles}
-                className="no-more-activities-modal"
-            >
-                <h3>
-                    There are no activities left.
-                    <br/>
-                    You've been taken back to first one.
-                </h3>
-            </Modal>
-            {activities.length > 0 ? (
-                <div className='delete-activity' onClick={() => handleDeleteActivity()}>
-                    <FontAwesomeIcon icon={faXmark} size="2xl" style={{color: "#000000",}}/>
+        <div className="background-container">
+            <div className='home-page'>
+                <Modal
+                    isOpen={showJoinedActivityModal}
+                    onRequestClose={() => setShowJoinedActivityModal(false)}
+                    contentLabel="joined-activity-modal"
+                    style={ModalStyles.joinedActivityModalStyles}
+                    className="joined-activity-modal"
+                >
+                    <h3>
+                        Succesfully joined to activity!
+                    </h3>
+                </Modal>
+                <Modal
+                    isOpen={showNoMoreActivitiesModal}
+                    onRequestClose={() => setShowNoMoreActivitiesModal(false)}
+                    contentLabel="no-more-activities-modal"
+                    style={ModalStyles.noMoreActivitiesModalStyles}
+                    className="no-more-activities-modal"
+                >
+                    <h3>
+                        There are no activities left.
+                        <br/>
+                        You've been taken back to first one.
+                    </h3>
+                </Modal>
+                {activities.length > 0 ? (
+                    <div className='delete-activity' onClick={() => handleDeleteActivity()}>
+                        <FontAwesomeIcon icon={faXmark} size="2xl" style={{color: "#000000",}}/>
+                    </div>
+
+                ) : <></>}
+
+
+                <div className='card-activity'>
+                    {activities.length > 0 ? (
+                        <ActivityCard activity={activities[currentActivityIndex]}
+                                      handleDeleteActivity={handleDeleteActivity}
+                                      handleAcceptActivity={handleAcceptActivity}
+                                      setDisplayLoginForm={setDisplayLoginForm}
+                                      isUserLogged={isUserLogged}/>
+                    ) : (
+                        <div className={"no-more-activities"}>
+                            <h3>
+                                We don't have more activities with Your preferences
+                            </h3>
+
+                            <Link to="/search" className={"go-to-search"}>
+                                <p>Go to search to find more</p>
+                            </Link>
+
+
+                        </div>
+
+
+                    )}
                 </div>
 
-            ) : <></>}
-
-
-            <div className='card-activity'>
                 {activities.length > 0 ? (
-                    <ActivityCard activity={activities[currentActivityIndex]}/>
-                ) : (
-                    <div className={"no-more-activities"}>
-                        <h3>
-                            We don't have more activities with Your preferences
-                        </h3>
-
-                        <Link to="/search" className={"go-to-search"}>
-                            <p>Go to search to find more</p>
-                        </Link>
-
-
+                    <div className='accept-activity' onClick={() => {
+                        isUserLogged ? handleAcceptActivity() : setDisplayLoginForm(true)
+                    }}>
+                        <FontAwesomeIcon icon={faCheck} size="2xl" style={{color: "#000000"}}/>
                     </div>
-
-
+                ) : (
+                    <></>
                 )}
             </div>
-
-            {activities.length > 0 ? (
-                isUserLogged ? (
-                    <div className='accept-activity' onClick={handleAcceptActivity}>
-                        <FontAwesomeIcon icon={faCheck} size="2xl" style={{color: "#000000"}}/>
-                    </div>
-                ) : (
-                    <div className='accept-activity' onClick={() => setDisplayLoginForm(true)}>
-                        <FontAwesomeIcon icon={faCheck} size="2xl" style={{color: "#000000"}}/>
-                    </div>
-                )
-            ) : (
-                <></>
-            )}
-
-
         </div>
     )
 }

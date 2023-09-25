@@ -16,13 +16,13 @@ const loginFormModalStyles = {
     }
 };
 
-const activityAddedModalStyles = {
+const smallModalStyles = {
     content: {
         position: "absolute",
         display: "flex",
         background: "white",
         flexDirection: "column",
-        height: "7vh",
+        height: "9vh",
         top: "10%",
         left: "35%",
         transition: "height 0.5s, top 0.5s",
@@ -124,5 +124,5 @@ const joinedActivityModalStyles = {
         maxWidth: "400px",
     }
 }
-export default {loginFormModalStyles, activityAddedModalStyles, activityDeletedModalStyles, additionalProfileInfoModalStyles, updateUserInfoModalStyles, noMoreActivitiesModalStyles, joinedActivityModalStyles};
+export default {loginFormModalStyles, smallModalStyles, activityDeletedModalStyles, additionalProfileInfoModalStyles, updateUserInfoModalStyles, noMoreActivitiesModalStyles, joinedActivityModalStyles};
 

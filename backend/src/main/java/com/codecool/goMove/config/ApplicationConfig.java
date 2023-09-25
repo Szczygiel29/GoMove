@@ -20,11 +20,17 @@ public class ApplicationConfig {
 
     private final UserRepository userRepository;
 
-    @Value("${gomove.image.folder}")
-    private String photoFolder;
+    @Value("${gomove.user_image.folder}")
+    private String userPhotoFolder;
+    @Value("${gomove.activity_image.folder}")
+    private String activityPhotoFolder;
 
-    public String getPhotoFolder() {
-        return photoFolder;
+
+    public String getUserPhotoFolder() {
+        return userPhotoFolder;
+    }
+    public String getActivityPhotoFolder() {
+        return activityPhotoFolder;
     }
 
     @Bean

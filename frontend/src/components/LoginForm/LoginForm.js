@@ -1,11 +1,14 @@
 import {useContext, useState} from "react";
 import './LoginForm.css'
 import {Context} from "../../App";
+import {updateInfo} from "../functions";
 
 function LoginForm({setDisplayLoginForm, setDisplayRegistrationForm}) {
 
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [loginData, setLoginData] = useState({
+        username: "",
+        password: ""
+    })
     const [showErrorMessage, setShowErrorMessage] = useState(false);
 
     const setIsUserLogged = useContext(Context).setIsUserLogged;
@@ -24,8 +27,8 @@ function LoginForm({setDisplayLoginForm, setDisplayRegistrationForm}) {
             },
             "method": "POST",
             "body": JSON.stringify({
-                "username": username,
-                "password": password
+                "username": loginData.username,
+                "password": loginData.password
             })
         }).then(response => {
             if (response.status === 200) {
@@ -55,8 +58,8 @@ function LoginForm({setDisplayLoginForm, setDisplayRegistrationForm}) {
                     className="username-input"
                     type="text"
                     id="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={loginData.username}
+                    onChange={(e) => updateInfo(setLoginData, "username", e.target.value)}
                 ></input>
             </div>
             <div className="password-field">
@@ -65,8 +68,8 @@ function LoginForm({setDisplayLoginForm, setDisplayRegistrationForm}) {
                     className="password-input"
                     type="password"
                     id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={loginData.password}
+                    onChange={(e) => updateInfo(setLoginData, "password", e.target.value)}
                 ></input>
             </div>
             {showErrorMessage &&

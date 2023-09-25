@@ -81,7 +81,7 @@ body {
 }
 
 
-.activity-added-modal{
+.activity-added-modal {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -136,4 +136,22 @@ body {
     animation: ease;
     animation-duration: .8s;
     animation-name: slideFromTopUpdateUserInfoModal ;
+}
+
+@keyframes slideFromTopEmailSentModal {
+    from {
+        top: -80%;
+    }
+    to {
+        top: 10%;
+    }
+}
+
+.email-sent-modal{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: ease;
+    animation-duration: .8s;
+    animation-name: slideFromTopEmailSentModal;
 }

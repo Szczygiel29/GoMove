@@ -5,59 +5,47 @@ import Modal from "react-modal";
 import additionalProfileInfoModalStyles from "../../ModalStyles";
 import {useRef} from 'react';
 import {Context} from "../../App";
+import {convertBase64, updateInfo} from "../functions";
 
 function AdditionalUserInfoForm() {
     const userData = useContext(Context).userData;
-    const [city, setCity] = useState("");
-    const [preferredActivity, setPreferredActivity] = useState("");
-    const [description, setDescription] = useState("");
+    const [additionalInfo, setAdditionalInfo] = useState({
+        city: "",
+        preferredActivity: null,
+        description: "",
+        selectedImage: ""
+    })
     const navigate = useNavigate();
-    const [selectedImage, setSelectedImage] = useState("");
     const uploadImageRef = useRef(null);
-
-    const convertBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-            const fileReader = new FileReader();
-            fileReader.readAsDataURL(file);
-
-            fileReader.onload = () => {
-                resolve(fileReader.result);
-            };
-
-            fileReader.onerror = (error) => {
-                reject(error);
-            };
-        });
-    };
 
     const handleImageUpload = async (event) => {
         const file = event.target.files[0];
         const base64 = await convertBase64(file);
-        setSelectedImage(base64);
+        updateInfo(setAdditionalInfo, "selectedImage", base64);
     };
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        userData.description = description;
-        userData.city = city;
-        userData.preferredActivity = preferredActivity;
-        if (selectedImage) {
-            userData.userPhoto = selectedImage.split(",")[1];
+        userData.description = additionalInfo.description;
+        userData.city = additionalInfo.city;
+        userData.preferredActivity = additionalInfo.preferredActivity;
+        if (additionalInfo.selectedImage) {
+            userData.userPhoto = additionalInfo.selectedImage.split(",")[1];
         }
 
         fetch(`http://localhost:8080/users/update/${localStorage.getItem("userId")}`, {
             headers: {Authorization: localStorage.getItem("jwt"), "Content-Type": "application/json"},
             method: "PATCH",
             body: JSON.stringify({
-                "city": city,
-                "preferredActivity": preferredActivity,
-                "description": description,
-                "userPhoto": selectedImage.split(",")[1]
+                "city": additionalInfo.city,
+                "preferredActivity": additionalInfo.preferredActivity,
+                "description": additionalInfo.description,
+                "userPhoto": additionalInfo.selectedImage.split(",")[1]
             })
         }).then(response => {
             if (response.status === 200) {
                 console.log("Update info successful");
-                navigate("/profile")
+                navigate(`/profile/${userData.userId}`)
             } else {
                 console.log("something went wrong")
             }
@@ -78,8 +66,8 @@ function AdditionalUserInfoForm() {
                         <div>
                             <div>
                                 <button className="custom-file-button" type="button" onClick={() => uploadImageRef.current.click()}>
-                                    <img className='profile-picture'
-                                         src={selectedImage ? selectedImage : 'blank-profile-picture.png'}></img>
+                                    <img className='profile-picture' alt='profile picture'
+                                         src={additionalInfo.selectedImage ? additionalInfo.selectedImage : 'blank-profile-picture.png'}></img>
                                     <div className='change-photo-button'>
                                         Click to change
                                     </div>
@@ -99,18 +87,17 @@ function AdditionalUserInfoForm() {
                                 <label className="city-label">City</label>
                                 <textarea
                                     className="city-input"
-                                    type="text"
                                     id="city"
-                                    value={city}
-                                    onChange={e => setCity(e.target.value)}
+                                    value={additionalInfo.city}
+                                    onChange={e => updateInfo(setAdditionalInfo, "city", e.target.value)}
                                 ></textarea>
                             </div>
                             <div className="profile-description-field">
                                 <label className="profile-description-label">Description</label>
                                 <textarea className="profile-description-input"
                                     id="description"
-                                    value={description}
-                                    onChange={e => setDescription(e.target.value)}>
+                                    value={additionalInfo.description}
+                                    onChange={e => updateInfo(setAdditionalInfo, "description", e.target.value)}>
                                 </textarea>
                             </div>
                             <div className="preferred-activity-field">
@@ -119,8 +106,8 @@ function AdditionalUserInfoForm() {
                                     className="preferred-activity-select"
                                     id="preferred-activity"
                                     defaultValue="Select"
-                                    style={{color: preferredActivity ? 'black' : 'grey'}}
-                                    onChange={e => setPreferredActivity(e.target.value)}
+                                    style={{color: additionalInfo.preferredActivity ? 'black' : 'grey'}}
+                                    onChange={e => updateInfo(setAdditionalInfo, "preferredActivity", e.target.value)}
                                 >
                                     <option hidden value="Select">Select</option>
                                     <option style={{color: 'black'}} value="SKATING">Skating</option>

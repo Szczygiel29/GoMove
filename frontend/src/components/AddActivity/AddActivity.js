@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Autocomplete, useJsApiLoader} from '@react-google-maps/api';
 import GoogleMapComponent from "../GoogleMap/GoogleMap";
 import {useNavigate} from "react-router-dom";
@@ -8,28 +8,37 @@ import './AddActivity.css'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPersonBiking, faPersonRunning, faPersonSkating, faPersonWalking} from "@fortawesome/free-solid-svg-icons";
 import ModalStyles from "../../ModalStyles";
-import ActivityAddedModal from "../ActivityAddedModal/ActivityAddedModal";
 import Modal from "react-modal";
+import {convertBase64, updateInfo} from "../functions";
 
 const googleMapApiKey = process.env.REACT_APP_GOOGLE_MAP_API_KEY;
 const googleMapsLibraries = ["places"];
 
 const AddActivity = () => {
     const setDisplayActivityAddedModal = useContext(Context).setDisplayActivityAddedModal;
-    const [title, setTitle] = useState("");
-    const [selectedAddress, setSelectedAddress] = useState("");
-    const [activityType, setActivityType] = useState("");
-    const [description, setDescription] = useState("");
-    const [date, setDate] = useState("");
-    const [time, setTime] = useState("");
-    const [city, setCity] = useState("");
-    const [street, setStreet] = useState("");
-    const [streetNumber, setStreetNumber] = useState("");
-    const [country, setCountry] = useState("");
+    const selectedUserPlace = {
+        selectedAddress: "",
+        city: "",
+        street: "",
+        streetNumber: "",
+        country: "",
+    }
+    const [activityData, setActivityData] = useState({
+        title: "",
+        activityType: "",
+        description: "",
+        date: "",
+        time: "",
+        activityPhoto: null,
+        selectedUserPlace: selectedUserPlace
+    })
     const [timeDisable, setTimeDisable] = useState(true);
     const [chosenOption, setChosenOption] = useState(null);
     const [showIncorrectActivityModal, setShowIncorrectActivityModal] = useState(false);
     const [showWrongAddressModal, setShowWrongAddressModal] = useState(false);
+    const [showWrongFileFormatModal, setShowWrongFileFormatModal] = useState(false);
+    const uploadImageRef = useRef(null);
+    const [fileFormat, setFileFormat] = useState("");
 
     const navigate = useNavigate();
 
@@ -40,140 +49,53 @@ const AddActivity = () => {
     maxDate.setFullYear(maxDate.getFullYear() + 1);
     const maxDateISO = maxDate.toISOString().split('T')[0];
 
+    const allowedFormats = ["", "jpg", "jpeg", "png"]
+
     useEffect(() => {
         manageTime();
-    }, [date])
+    }, [activityData.date])
 
     const handleChosenOption = (option) => {
-        const value = chosenOption === option ? null : option;
+        const value = chosenOption === option ? "" : option;
         setChosenOption(value);
-        setActivityType(value);
+        updateInfo(setActivityData, "activityType", value);
     };
-
-    const clearAddress = () => {
-        setSelectedAddress("");
-        setCity("");
-        setStreet("");
-        setStreetNumber("");
-        setCountry("");
-    }
 
     const handlePlaceSelect = () => {
         const selectedPlace = window.autocomplete.getPlace();
 
         if (!selectedPlace || !selectedPlace.address_components) {
-            clearAddress();
+            updateInfo(setActivityData, "selectedUserPlace", null);
             return;
         }
-        setSelectedAddress(selectedPlace.formatted_address);
-        const cityComponent = selectedPlace.address_components.find(
-            (component) => component.types.includes("locality")
-        );
-        if (cityComponent) {
-            setCity(cityComponent.long_name);
-        } else {
-            setCity("");
-        }
 
-        const streetComponent = selectedPlace.address_components.find(
-            (component) => component.types.includes("route")
-        );
-        if (streetComponent) {
-            setStreet(streetComponent.long_name);
-        } else {
-            setStreet("");
-        }
+        activityData.selectedUserPlace.selectedAddress = selectedPlace.formatted_address;
 
-        const streetNumberComponent = selectedPlace.address_components.find(
-            (component) => component.types.includes("street_number")
-        );
-        if (streetNumberComponent) {
-            setStreetNumber(streetNumberComponent.long_name);
-        } else {
-            setStreetNumber("");
-        }
-
-        const countryComponent = selectedPlace.address_components.find(
-            (component) => component.types.includes("country")
-        );
-        if (countryComponent) {
-            setCountry(countryComponent.long_name);
-        } else {
-            setCountry("");
-        }
-
-
-        console.log(selectedPlace)
-
+        selectedPlace.address_components.forEach((component) => {
+            if (component.types.includes("locality")) {
+                updateInfo(setActivityData, "selectedUserPlace.city", component.long_name)
+            } else if (component.types.includes("route")) {
+                updateInfo(setActivityData, "selectedUserPlace.street", component.long_name)
+            } else if (component.types.includes("street_number")) {
+                updateInfo(setActivityData, "selectedUserPlace.streetNumber", component.long_name)
+            } else if (component.types.includes("country")) {
+                updateInfo(setActivityData, "selectedUserPlace.country", component.long_name)
+            }
+        });
     };
 
-    const {isLoaded} = useJsApiLoader({
-        id: 'google-map-script',
-        googleMapsApiKey: googleMapApiKey,
-        libraries: googleMapsLibraries
-    });
-
-    function handleSubmit(e) {
-        e.preventDefault();
-
-        if (!selectedAddress) {
-            setShowWrongAddressModal(true);
-            setTimeout(() => {
-                setShowWrongAddressModal(false);
-            }, 3000)
-            return;
+    const handleImageUpload = async (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setFileFormat(file.name.split(".")[file.name.split(".").length - 1]);
+            const base64 = await convertBase64(file);
+            updateInfo(setActivityData, "activityPhoto", base64);
         }
+    };
 
-        if (activityType === "") {
-            setShowIncorrectActivityModal(true);
-            setTimeout(() => {
-                setShowIncorrectActivityModal(false);
-            }, 3000)
-            return;
-        }
-
-        if (![selectedAddress, city, street].every(Boolean)) {
-            setShowWrongAddressModal(true);
-            setTimeout(() => {
-                setShowWrongAddressModal(false);
-            }, 3000)
-            return;
-        }
-
-
-        const activityId = UUID();
-        fetch("http://localhost:8080/activities", {
-            headers: {Authorization: localStorage.getItem("jwt"), "Content-Type": "application/json"},
-            method: "POST",
-            body: JSON.stringify({
-                "activityId": activityId,
-                "activityType": activityType,
-                "owner": {
-                    "userId": userId
-                },
-                "title": title,
-                "city": city,
-                "street": street,
-                "streetNumber": streetNumber,
-                "country": country,
-                "address": selectedAddress,
-                "date": date,
-                "time": time,
-                "description": description,
-                "participants": null,
-                "activityPhotoUrl": null
-            })
-        }).then(response => {
-            if (response.status !== 200) {
-                console.error("something went wrong");
-                return;
-            }
-            setDisplayActivityAddedModal(true);
-            setTimeout(() => {
-                setDisplayActivityAddedModal(false)
-                navigate(`/activity-page/${activityId}`)
-            }, 3000)
-        })
+    function dateHandler(e) {
+        updateInfo(setActivityData, "date", e.target.value);
+        setTimeDisable(false);
     }
 
     function addHours(date, hours) {
@@ -183,23 +105,114 @@ const AddActivity = () => {
     }
 
     function manageTime() {
-        if (new Date(date).getDate() === new Date().getDate()) {
+        if (new Date(activityData.date).getDate() === new Date().getDate()) {
             return addHours(new Date(), 2);
         }
     }
 
-    function dateHandler(e) {
-        setDate(e.target.value);
-        setTimeDisable(false);
+    const {isLoaded} = useJsApiLoader({
+        id: 'google-map-script',
+        googleMapsApiKey: googleMapApiKey,
+        libraries: googleMapsLibraries
+    });
+
+    function validateSelectedUserPlace() {
+        if (!selectedUserPlace) {
+            setShowWrongAddressModal(true);
+            setTimeout(() => {
+                setShowWrongAddressModal(false);
+            }, 3000)
+            return false;
+        }
+        return true;
     }
 
+    function validateActivityType() {
+        if (activityData.activityType === "") {
+            setShowIncorrectActivityModal(true);
+            setTimeout(() => {
+                setShowIncorrectActivityModal(false);
+            }, 3000)
+            return false;
+        }
+        return true;
+    }
+
+    function validateAddress() {
+        if (![activityData.selectedUserPlace.selectedAddress, activityData.selectedUserPlace.city, activityData.selectedUserPlace.street].every(Boolean)) {
+            setShowWrongAddressModal(true);
+            setTimeout(() => {
+                setShowWrongAddressModal(false);
+            }, 3000)
+            return false;
+        }
+        return true;
+    }
+
+    function validateFileFormat() {
+        if (!allowedFormats.includes(fileFormat)) {
+            setShowWrongFileFormatModal(true);
+            setTimeout(() => {
+                setShowWrongFileFormatModal(false);
+            }, 3000)
+            return false;
+        }
+        return true;
+    }
+
+    function createRequestBody() {
+        const activityId = UUID();
+        return {
+            activityId: activityId,
+            activityType: activityData.activityType,
+            owner: {userId},
+            title: activityData.title,
+            city: activityData.selectedUserPlace.city,
+            street: activityData.selectedUserPlace.street,
+            streetNumber: activityData.selectedUserPlace.streetNumber,
+            country: activityData.selectedUserPlace.country,
+            address: activityData.selectedUserPlace.selectedAddress,
+            date: activityData.date,
+            time: activityData.time,
+            description: activityData.description,
+            participants: null,
+            activityPhoto:
+                activityData.activityPhoto && activityData.activityPhoto.length > 0
+                    ? activityData.activityPhoto.split(",")[1]
+                    : null,
+        };
+    }
+
+    function handleSubmit(e) {
+        e.preventDefault();
+
+        if (!validateAddress() || !validateSelectedUserPlace() || !validateActivityType() || !validateFileFormat()) return false;
+
+        const requestBody = createRequestBody();
+
+        fetch("http://localhost:8080/activities", {
+            headers: {Authorization: localStorage.getItem("jwt"), "Content-Type": "application/json"},
+            method: "POST",
+            body: JSON.stringify(requestBody)
+        }).then(response => {
+            if (response.status !== 200) {
+                console.error("something went wrong");
+                return;
+            }
+            setDisplayActivityAddedModal(true);
+            setTimeout(() => {
+                setDisplayActivityAddedModal(false)
+                navigate(`/activity-page/${requestBody.activityId}`)
+            }, 3000)
+        })
+    }
 
     return isLoaded ? (
         <div className="add-activity">
             <Modal
                 isOpen={showWrongAddressModal}
                 onRequestClose={() => setShowWrongAddressModal(false)}
-                style={ModalStyles.activityAddedModalStyles}
+                style={ModalStyles.smallModalStyles}
                 className="activity-added-modal"
                 appElement={document.querySelector("#root") || undefined}
             >
@@ -208,11 +221,20 @@ const AddActivity = () => {
             <Modal
                 isOpen={showIncorrectActivityModal}
                 onRequestClose={() => setShowIncorrectActivityModal(false)}
-                style={ModalStyles.activityAddedModalStyles}
+                style={ModalStyles.smallModalStyles}
                 className="activity-added-modal"
                 appElement={document.querySelector("#root") || undefined}
             >
                 Choose correct activity type.
+            </Modal>
+            <Modal
+                isOpen={showWrongFileFormatModal}
+                onRequestClose={() => setShowWrongFileFormatModal(false)}
+                style={ModalStyles.smallModalStyles}
+                className="activity-added-modal"
+                appElement={document.querySelector("#root") || undefined}
+            >
+                Select a file with the correct extension. Valid extensions are: .jpg, .jpeg, .png.
             </Modal>
             <form className="add-activity-form" onSubmit={handleSubmit}>
                 <div className="title-field">
@@ -222,10 +244,10 @@ const AddActivity = () => {
                         className="title-input"
                         type="text"
                         id="title"
-                        value={title}
+                        value={activityData.title}
                         minLength={8}
                         maxLength={32}
-                        onChange={e => setTitle(e.target.value)}
+                        onChange={e => updateInfo(setActivityData, "title", e.target.value)}
                     />
                 </div>
                 <div className="location-field">
@@ -274,18 +296,17 @@ const AddActivity = () => {
                     <textarea
                         required={true}
                         className="description-input"
-                        type="text"
                         id="description"
-                        value={description}
+                        value={activityData.description}
                         minLength={8}
                         maxLength={1024}
-                        onChange={e => setDescription(e.target.value)}
+                        onChange={e => updateInfo(setActivityData, "description", e.target.value)}
                     /></div>
                 <div className="date-field">
                     <label className="date-label">Date</label>
                     <input
                         required={true}
-                        value={date}
+                        value={activityData.date}
                         type="date"
                         id="date"
                         name="date"
@@ -298,19 +319,40 @@ const AddActivity = () => {
                     <input
                         disabled={timeDisable}
                         required={true}
-                        value={time}
+                        value={activityData.time}
                         type="time"
                         id="time"
                         name="time"
                         min={manageTime()}
-                        onChange={(e) => setTime(e.target.value)}/>
+                        onChange={(e) => updateInfo(setActivityData, "time", e.target.value)}/>
+                </div>
+                <div className="add-activity-add-photo">
+                    <button className="custom-file-button" type="button" onClick={() => uploadImageRef.current.click()}>
+                        {activityData.activityPhoto ? <img className='activity-picture' alt="activity picture"
+                                                           src={activityData.activityPhoto}></img> :
+                            <div className='change-photo-button'>
+                                Click to choose activity image
+                            </div>}
+                    </button>
+                    <div className="image-field">
+                        <input
+                            required={false}
+                            ref={uploadImageRef}
+                            type="file"
+                            accept=".jpg, .jpeg, .png"
+                            onChange={handleImageUpload}
+                            style={{display: 'none'}}
+                        />
+                    </div>
                 </div>
                 <button className="submit-btn" type="submit">Create activity</button>
             </form>
-            {selectedAddress ?
+            {activityData.selectedUserPlace && activityData.selectedUserPlace.selectedAddress ?
                 <div className="google-maps">
-                    <p>Selected Address: {selectedAddress}</p>
-                    <GoogleMapComponent height={'400px'} width={'1020px'} address={selectedAddress}/></div> : <></>}
+                    <p>Selected Address: {activityData.selectedUserPlace.selectedAddress}</p>
+                    <GoogleMapComponent height={'400px'} width={'1020px'}
+                                        address={activityData.selectedUserPlace.selectedAddress}/>
+                </div> : <></>}
         </div>
     ) : <></>;
 };

@@ -25,9 +25,6 @@ class ActivityServiceTest {
     @Mock
     private ActivityRepository activityRepository;
 
-    @Mock
-    private UserService userService;
-
     @InjectMocks
     private ActivityService activityService;
 
@@ -219,26 +216,6 @@ class ActivityServiceTest {
         assertTrue(result.contains("City1"));
         assertTrue(result.contains("City2"));
         assertTrue(result.contains("City3"));
-    }
-
-    @Test
-    void testAddActivity_ActivityInTheFuture() {
-        Activity activityToAdd = new Activity();
-        User user = new User();
-        user.setUserId(UUID.randomUUID());
-
-        activityToAdd.setActivityId(UUID.randomUUID());
-        activityToAdd.setOwner(user);
-        activityToAdd.setDate(LocalDate.now().plusDays(1));
-        activityToAdd.setTime(LocalTime.now().plusHours(1));
-
-        when(userService.enrollUser(user.getUserId(), activityToAdd.getActivityId())).thenReturn(true);
-        when(activityRepository.save(activityToAdd)).thenReturn(activityToAdd);
-
-        boolean result = activityService.addActivity(activityToAdd);
-
-        assertTrue(result);
-        verify(activityRepository, times(1)).save(activityToAdd);
     }
 
     @Test

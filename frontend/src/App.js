@@ -75,7 +75,7 @@ function App() {
                 </Modal>
                 <Modal
                     isOpen={displayActivityAddedModal}
-                    style={ModalStyles.activityAddedModalStyles}
+                    style={ModalStyles.smallModalStyles}
                     className="activity-added-modal"
                     appElement={document.querySelector("#root") || undefined}
                 >

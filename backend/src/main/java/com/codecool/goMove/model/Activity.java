@@ -1,5 +1,6 @@
 package com.codecool.goMove.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -50,8 +51,10 @@ public class Activity {
 
     @ManyToMany(mappedBy = "enrolledActivities")
     private Set<User> participants;
-    @Column(columnDefinition = "TEXT")
-    private String activityPhotoUrl;
+    @JsonIgnore
+    private String photoName;
+    @Transient
+    private byte[] activityPhoto;
 
     public Activity(ActivityType activityType, User owner, String title, String city, String address, LocalDate date, LocalTime time, String description) {
         this.activityId = UUID.randomUUID();

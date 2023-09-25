@@ -1,7 +1,7 @@
 .activities-in-profile-carousel {
     display: flex;
     overflow: hidden;
-    width: 1130px;
+    width: 1210px;
     align-items: center;
     height: 400px;
 }
@@ -10,7 +10,7 @@
     display: flex;
     flex-direction: row;
     position: relative;
-    right: 0px;
+    right: -15px;
     gap: 20px;
     transition: right .3s;
 }
@@ -50,11 +50,14 @@
     border-radius: 10px;
     padding: 20px;
     margin: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
+    -webkit-box-shadow: 0 0 12px 0 rgba(66, 68, 90, 1);
+    -moz-box-shadow: 0 0 12px 0 rgba(66, 68, 90, 1);
+    box-shadow: 0 0 12px 0 rgba(66, 68, 90, 1);
     display: flex;
     flex-direction: column;
-    width: 150px;
-    height: 285px;
+    width: 160px;
+    height: 300px;
     cursor: pointer;
     text-align: center;
     transition: transform .5s;
@@ -73,7 +76,7 @@
     text-align: center;
 }
 
-.activity-title {
+.activities-in-profile-carousel .activity-title {
     min-height: 40px;
     max-height: 40px;
     display: flex;
@@ -82,6 +85,7 @@
     font-size: 18px;
     font-weight: bold;
     color: #333;
+    word-break: break-word;
 }
 
 .activity-type {
@@ -103,6 +107,8 @@
 }
 
 .activity-city {
+    margin-bottom: 15px;
+    margin-top: 5px;
     font-size: 16px;
     color: #777;
 }
@@ -139,7 +145,9 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: 0 0 16px 0 rgba(66, 68, 90, 1);
+    -moz-box-shadow: 0 0 16px 0 rgba(66, 68, 90, 1);
+    box-shadow: 0 0 16px 0 rgba(66, 68, 90, 1);
     margin-right: 20vh;
 }
 
@@ -148,6 +156,7 @@
     flex-direction: column;
     justify-content: center;
     word-wrap: break-word;
+    max-width: 600px;
 }
 .update-info-button{
     margin-top: 30px;
@@ -189,9 +198,7 @@
 }
 
 .profile-picture {
-    -webkit-box-shadow: 0px 0px 24px 0px rgba(66, 68, 90, 1);
-    -moz-box-shadow: 0px 0px 24px 0px rgba(66, 68, 90, 1);
-    box-shadow: 0px 0px 24px 0px rgba(66, 68, 90, 1);
+    object-fit: cover;
     border-radius: 50%;
 }
 
@@ -205,4 +212,23 @@
     margin: 0;
     padding: 5px 0;
     color: #666;
+}
+
+.activity-photo img {
+    border-radius: 8px;
+    object-fit: cover;
+    width: 150px;
+    height: 120px;
+}
+@media screen and (max-width: 768px) {
+    .activities-in-profile-carousel {
+        display: flex;
+        overflow: hidden;
+        width: 240px;
+        align-items: center;
+        height: 400px;
+    }
+    .user-card{
+        margin-right: 10vw;
+    }
 }

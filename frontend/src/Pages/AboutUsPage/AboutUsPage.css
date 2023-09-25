@@ -23,6 +23,7 @@ body {
     gap: 100px;
     position: relative;
     right: 100vw;
+    align-items: center;
     transition: right 1s;
 }
 
@@ -49,13 +50,17 @@ body {
 
 .about-us-page .creators .creator .img img {
     width: 400px;
+    max-width: 400px;
+    min-height: 400px;
     max-height: 400px;
     object-fit: cover;
+    border-radius: 50%;
 }
 
 .about-us-page .creators .creator .content {
     flex: 3;
     display: flex;
+    align-items: center;
     flex-direction: column;
     justify-content: space-between;
 }
@@ -146,8 +151,15 @@ body {
     border-radius: 3px;
     font-size: 16px;
     background-color: #e6ece6;
+    transition: transform .5s;
 }
-
+.about-us-page input[type="text"]:hover,
+.about-us-page input[type="email"]:hover,
+.about-us-page input[type="message"]:hover,
+.about-us-page textarea:hover {
+transform: scale(1.04);
+    transition: transform .5s;
+}
 .about-us-page .contact label {
     font-size: 15px;
     color: #f0f0f0;
@@ -169,6 +181,7 @@ body {
     cursor: pointer;
     font-size: 18px;
     width: 80%;
+    transition: transform .4s ease, background-color .4s ease;
 }
 
 .about-us-page .contact .contact-btn:hover {
@@ -207,6 +220,8 @@ body {
     .about-us-page > .creators > .creator > .img > img {
         min-width: 80%;
         max-width: 80%;
+        min-height: 80%;
+        max-height: 80%;
     }
 }
 

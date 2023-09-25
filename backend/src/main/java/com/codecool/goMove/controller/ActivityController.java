@@ -3,6 +3,7 @@ package com.codecool.goMove.controller;
 import com.codecool.goMove.model.Activity;
 import com.codecool.goMove.model.ActivityType;
 import com.codecool.goMove.model.User;
+import com.codecool.goMove.service.ActivityImageService;
 import com.codecool.goMove.service.ActivityService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -10,15 +11,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/activities")
 public class ActivityController {
 
     private final ActivityService activityService;
+    private final ActivityImageService activityImageService;
 
-    public ActivityController(ActivityService activityService) {
+    public ActivityController(ActivityService activityService, ActivityImageService activityImageService) {
         this.activityService = activityService;
+        this.activityImageService = activityImageService;
     }
 
     @GetMapping
@@ -28,32 +32,56 @@ public class ActivityController {
 
     @GetMapping("/future")
     public ResponseEntity<?> getFutureActivities() {
-        return ResponseEntity.status(HttpStatus.OK).body(activityService.getFutureActivities());
+        return ResponseEntity.status(HttpStatus.OK).body(activityService.getFutureActivities().stream().peek(
+                activity -> {
+                    if (activity.getPhotoName() != null && !activity.getPhotoName().isEmpty()) {
+                        activity.setActivityPhoto(activityImageService.getImage(activity.getPhotoName()));
+                    }
+                }
+        ).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getActivityById(@PathVariable UUID id) {
         Activity activityById = activityService.getActivityById(id);
-        if (activityById != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(activityById);
+        if (activityById.getPhotoName() != null && !activityById.getPhotoName().isEmpty()) {
+            activityById.setActivityPhoto(activityImageService.getImage(activityById.getPhotoName()));
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No activity with requested id");
+        return ResponseEntity.status(HttpStatus.OK).body(activityById);
     }
 
     @GetMapping("/filter")
     public ResponseEntity<?> getActivitiesByTypeAndCity(@RequestParam(required = false) String city,
                                                         @RequestParam(required = false) ActivityType type) {
-        return ResponseEntity.status(HttpStatus.OK).body(activityService.getActivitiesByTypeAndCity(city, type));
+        return ResponseEntity.status(HttpStatus.OK).body(activityService.getActivitiesByTypeAndCity(city, type).stream().peek(
+                activity -> {
+                    if (activity.getPhotoName() != null && !activity.getPhotoName().isEmpty()) {
+                        activity.setActivityPhoto(activityImageService.getImage(activity.getPhotoName()));
+                    }
+                }
+        ).collect(Collectors.toList()));
     }
 
     @GetMapping("/user/{ownerId}")
     public ResponseEntity<?> getActivitiesByOwner(@PathVariable UUID ownerId) {
-        return ResponseEntity.status(HttpStatus.OK).body(activityService.getActivitiesByOwner(ownerId));
+        return ResponseEntity.status(HttpStatus.OK).body(activityService.getActivitiesByOwner(ownerId).stream().peek(
+                activity -> {
+                    if (activity.getPhotoName() != null && !activity.getPhotoName().isEmpty()) {
+                        activity.setActivityPhoto(activityImageService.getImage(activity.getPhotoName()));
+                    }
+                }
+        ).collect(Collectors.toList()));
     }
 
     @GetMapping("/participant/{participantId}")
     public ResponseEntity<?> getActivitiesByParticipant(@PathVariable UUID participantId) {
-        return ResponseEntity.status(HttpStatus.OK).body(activityService.getActivitiesByParticipantId(participantId));
+        return ResponseEntity.status(HttpStatus.OK).body(activityService.getActivitiesByParticipantId(participantId).stream().peek(
+                activity -> {
+                    if (activity.getPhotoName() != null && !activity.getPhotoName().isEmpty()) {
+                        activity.setActivityPhoto(activityImageService.getImage(activity.getPhotoName()));
+                    }
+                }
+        ).collect(Collectors.toList()));
     }
 
     @GetMapping("/cities")

@@ -2,13 +2,13 @@ package com.codecool.goMove.controller;
 
 import com.codecool.goMove.model.User;
 import com.codecool.goMove.service.ImageService;
+import com.codecool.goMove.service.UserImageService;
 import com.codecool.goMove.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,7 +18,7 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
-    private final ImageService imageService;
+    private final UserImageService imageService;
 
 
     @GetMapping
@@ -29,22 +29,30 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable UUID id) {
         User userById = userService.getUserById(id);
+        if (userById == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No user with requested id");
+
+        }
+
         if (userById.getPhotoName() != null && !userById.getPhotoName().isEmpty()) {
             userById.setUserPhoto(imageService.getImage(userById.getPhotoName()));
         }
-        if (userById != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(userById);
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No user with requested id");
+
+        return ResponseEntity.status(HttpStatus.OK).body(userById);
     }
 
     @GetMapping("/name/{name}")
     public ResponseEntity<?> getUserByName(@PathVariable String name) {
         User userByName = userService.getUserByName(name);
-        if (userByName != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(userByName);
+        if (userByName == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No user with requested name");
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No user with requested name");
+
+        if (userByName.getPhotoName() != null && !userByName.getPhotoName().isEmpty()) {
+            userByName.setUserPhoto(imageService.getImage(userByName.getPhotoName()));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(userByName);
     }
 
     @PatchMapping("/update/{id}")

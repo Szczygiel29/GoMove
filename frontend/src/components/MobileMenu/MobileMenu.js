@@ -2,8 +2,8 @@ import React, {useState} from "react";
 import './MobileMenu.css';
 import {Link} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faBars, faChevronUp, faLaptopCode, faX} from "@fortawesome/free-solid-svg-icons";
-import {faFacebook, faYoutube} from "@fortawesome/free-brands-svg-icons";
+import {faBars, faChevronUp} from "@fortawesome/free-solid-svg-icons";
+import {faFacebook, faYoutube, faGithub} from "@fortawesome/free-brands-svg-icons";
 
 function MobileMenu({isUserLogged, setDisplayLoginForm, handleLogout}) {
     const [showMenu, setShowMenu] = useState(false);
@@ -55,8 +55,8 @@ function MobileMenu({isUserLogged, setDisplayLoginForm, handleLogout}) {
                                         style={{color: "#2b75f6"}}/></a>
                     <a><FontAwesomeIcon className='media-btn' icon={faYoutube} size="2x"
                                         style={{color: "#fa3333"}}/></a>
-                    <a><FontAwesomeIcon className='media-btn' icon={faLaptopCode} size="2x"
-                                        style={{color: "#90EE90FF"}}/></a>
+                    <a><FontAwesomeIcon className='media-btn' icon={faGithub} size="2x"
+                                        style={{color: "#1E3050"}}/></a>
                 </div>
             </div>
         </div>

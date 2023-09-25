@@ -6,6 +6,7 @@ import com.codecool.goMove.model.User;
 import com.codecool.goMove.repository.ActivityRepository;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -18,10 +19,12 @@ public class ActivityService {
 
     private final ActivityRepository activityRepository;
     private final UserService userService;
+    private final ActivityImageService activityImageService;
 
-    public ActivityService(ActivityRepository activityRepository, UserService userService) {
+    public ActivityService(ActivityRepository activityRepository, UserService userService, ActivityImageService activityImageService) {
         this.activityRepository = activityRepository;
         this.userService = userService;
+        this.activityImageService = activityImageService;
     }
 
     public List<Activity> getAllActivities() {
@@ -70,6 +73,15 @@ public class ActivityService {
         LocalTime now = LocalTime.now();
         if (activity.getDate().isAfter(today)
                 || activity.getDate().equals(today) && activity.getTime().isAfter(now)) {
+            try {
+                if (activity.getActivityPhoto() != null) {
+                    activityImageService.removeImage(activity.getPhotoName());
+                    activity.setPhotoName(activityImageService.uploadImage(activity.getActivityPhoto()));
+                }
+            } catch (IOException exception) {
+                //TODO add logging exception, send info to frontend
+                exception.printStackTrace();
+            }
             activityRepository.save(activity);
             userService.enrollUser(activity.getOwner().getUserId(), activity.getActivityId());
             return true;
@@ -111,7 +123,8 @@ public class ActivityService {
 
         if (activityRepository.findById(id).isPresent()) {
             Activity activityToDelete = activityRepository.findById(id).get();
-            for (User user : activityToDelete.getParticipants()) {
+            Set<User> participants = new HashSet<>(activityToDelete.getParticipants());
+            for (User user : participants) {
                 activityToDelete.removeParticipant(user);
             }
             activityRepository.deleteById(id);

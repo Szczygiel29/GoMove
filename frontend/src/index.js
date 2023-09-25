@@ -6,7 +6,7 @@ import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import ErrorPage from "./Pages/ErrorPage/ErrorPage";
 import AboutUsPage from "./Pages/AboutUsPage/AboutUsPage";
 import HomePage from "./Pages/HomePage/HomePage";
-import Search from "./components/Search/Search";
+import SearchPage from "./Pages/SearchPage/SearchPage";
 import ActivityPage from "./Pages/ActivityPage/ActivityPage";
 import AddActivity from "./components/AddActivity/AddActivity";
 import Profile from "./components/Profile/Profile";
@@ -29,10 +29,10 @@ const router = createBrowserRouter([
             },
             {
                 path: "/search",
-                element: <Search/>
+                element: <SearchPage/>
             },
             {
-                path: "/profile",
+                path: "/profile/:userId",
                 element: <Profile/>
             },
 

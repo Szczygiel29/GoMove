@@ -3,6 +3,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {format} from 'date-fns';
 import {Context} from "../../App";
 
+
 function ActivityComments({currentActivityID}) {
     const [activityComments, setActivityComments] = useState([]);
     const [newComment, setNewComment] = useState("");

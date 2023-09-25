@@ -1,3 +1,11 @@
+.delete-activity-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 25vh;
+}
+
 .delete-message {
     font-size: 1.5em;
     text-align: center;
@@ -5,8 +13,9 @@
 
 .delete-buttons {
     display: flex;
-    justify-content: space-evenly;
-    margin-top: 45px;
+    width: 25vw;
+    justify-content: space-around;
+    padding-top: 20px;
 }
 
 .delete-icon {
@@ -16,12 +25,12 @@
     border-radius: 10px;
     margin: 10px;
     cursor: pointer;
-    transition: transform .2s;
+    transition: transform .5s, background-color .5s;
 }
 
 .delete-icon:hover {
     color: red;
     background-color: rgba(175, 175, 175, 0.91);
     transform: scale(1.2);
-    transition: transform .3s;
+    transition: transform .5s, background-color .5s;
 }

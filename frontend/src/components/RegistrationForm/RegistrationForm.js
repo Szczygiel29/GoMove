@@ -2,13 +2,15 @@ import {useContext, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import './RegistrationForm.css'
 import {Context} from "../../App";
+import {updateInfo} from "../functions";
 
 function RegistrationForm({setDisplayLoginForm, setDisplayRegistrationForm}) {
-
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [registrationData, setRegistrationData] = useState({
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
+    })
     const [errorMessage, setErrorMessage] = useState([]);
     const [passwordErrorMessage, setPasswordErrorMessage] = useState([]);
     const navigate = useNavigate();
@@ -31,9 +33,9 @@ function RegistrationForm({setDisplayLoginForm, setDisplayRegistrationForm}) {
             },
             "method": "POST",
             "body": JSON.stringify({
-                "username": username,
-                "email": email,
-                "password": password
+                "username": registrationData.username,
+                "email": registrationData.email,
+                "password": registrationData.password
             })
         }).then(response => {
             if (response.status === 200) {
@@ -55,20 +57,20 @@ function RegistrationForm({setDisplayLoginForm, setDisplayRegistrationForm}) {
 
     function validateRegisterForm() {
         const errors = [];
-        if (username.trim().length < 4) {
+        if (registrationData.username.trim().length < 4) {
             errors.push("username has to be at least 4 characters long");
         }
-        if (username.trim().length > 16) {
+        if (registrationData.username.trim().length > 16) {
             errors.push("username can contain up to 16 characters")
         }
-        if (!validateEmail(email)) {
+        if (!validateEmail(registrationData.email)) {
             errors.push("provided e-mail adress is incorrect");
         }
-        if (password !== confirmPassword) {
+        if (registrationData.password !== registrationData.confirmPassword) {
             errors.push("passwords doesn't match")
         }
         setErrorMessage(errors);
-        return !(!validatePassword(password) || errorMessage.length > 0);
+        return !(!validatePassword(registrationData.password) || errorMessage.length > 0);
     }
 
     function validateEmail(email) {
@@ -132,8 +134,8 @@ function RegistrationForm({setDisplayLoginForm, setDisplayRegistrationForm}) {
                         className="username-input"
                         type="text"
                         id="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        value={registrationData.username}
+                        onChange={(e) => updateInfo(setRegistrationData, "username", e.target.value)}
                     ></input>
                 </div>
                 <div className="e-mail-field">
@@ -142,8 +144,8 @@ function RegistrationForm({setDisplayLoginForm, setDisplayRegistrationForm}) {
                         className="e-mail-input"
                         type="text"
                         id="e-mail"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={registrationData.email}
+                        onChange={(e) => updateInfo(setRegistrationData, "email", e.target.value)}
                     ></input>
                 </div>
                 <div className="password-field">
@@ -152,8 +154,8 @@ function RegistrationForm({setDisplayLoginForm, setDisplayRegistrationForm}) {
                         className="password-input"
                         type="password"
                         id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        value={registrationData.password}
+                        onChange={(e) => updateInfo(setRegistrationData, "password", e.target.value)}
                     ></input>
                 </div>
                 <div className="confirm-password-field">
@@ -162,8 +164,8 @@ function RegistrationForm({setDisplayLoginForm, setDisplayRegistrationForm}) {
                         className="confirm-password-input"
                         type="password"
                         id="confirm-password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        value={registrationData.confirmPassword}
+                        onChange={(e) => updateInfo(setRegistrationData, "confirmPassword", e.target.value)}
                     ></input>
                 </div>
                 <button className="register-submit-btn" type="submit">Register</button>

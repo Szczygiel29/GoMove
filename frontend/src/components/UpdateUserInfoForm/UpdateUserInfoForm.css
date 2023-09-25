@@ -11,3 +11,9 @@
     border: 3px solid lightgreen;
     border-radius: 6px;
 }
+@media screen and (max-width: 768px) {
+    .update-user-info-modal {
+        left: 10vw;
+        width: calc(80vw - 40px);
+    }
+}

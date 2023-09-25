@@ -40,10 +40,12 @@
 .username-input, .password-input, .e-mail-input, .confirm-password-input {
     min-width: 12.5vw;
     max-width: 12.5vw;
+    height: 16px;
 }
 
 .username-input:hover, .password-input:hover, .e-mail-input:hover, .confirm-password-input:hover {
     box-shadow: 0 0 5px yellowgreen;
+    border:1px solid black;
 }
 
 .error-mesage {

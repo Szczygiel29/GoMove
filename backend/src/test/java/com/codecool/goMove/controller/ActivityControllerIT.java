@@ -137,24 +137,25 @@ class ActivityControllerIT {
     public void testAddActivity() throws Exception {
         UUID userId = UUID.fromString("1111e1a7-7acf-4f50-8275-1449748e96eb");
         User owner = userRepository.findById(userId).orElseThrow();
+
         Activity activity = new Activity();
-        UUID activityId = UUID.randomUUID();
-        activity.setActivityId(activityId);
         activity.setActivityType(ActivityType.RUNNING);
         activity.setOwner(owner);
         activity.setTitle("Bieg rano");
         activity.setCity("Kraków");
         activity.setAddress("Ruczaj");
-        activity.setDate(LocalDate.of(2024,01,01));
+        activity.setDate(LocalDate.of(2023, 12, 01));
         activity.setTime(LocalTime.now());
         activity.setDescription("Bieg poranny po okolicy");
+
         String jsonRequest = objectMapper.writeValueAsString(activity);
 
         mockMvc.perform(post("/activities")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Activity added"));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.country").value("country is mandatory"))
+                .andExpect(jsonPath("$.street").value("street is mandatory"));
     }
 
     @Test

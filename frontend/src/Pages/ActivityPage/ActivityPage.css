@@ -11,6 +11,13 @@
     font-size: 24px;
     margin-bottom: 10px;
     justify-content: center;
+    word-break: break-word;
+}
+
+.activity-page-image-container {
+    display: flex;
+    justify-content: center;
+    height: 400px;
 }
 
 .activity-page .activity-image {
@@ -27,6 +34,7 @@
 .activity-page p {
     font-size: 16px;
     margin-bottom: 10px;
+    word-break: break-word;
 }
 
 .activity-page .map-container {
@@ -78,24 +86,31 @@
     align-items: center;
 }
 
-.copy-to-clipboard {
+.share-icon {
     cursor: pointer;
     width: 30px;
     height: 30px;
     font-size: 16px;
     padding: 10px;
+    margin-left: 15px;
     transition: transform .5s;
 }
 
-.copy-to-clipboard:hover {
-    transform: scale(1.2);
+.share-by-copy-button {
+    background: none;
+    border: none;
+    width: 65px;
+    padding: 0;
+}
+
+.share-activity-methods > button > svg:hover {
+    -webkit-box-shadow: 0 0 12px 1px rgba(66, 68, 90, 1);
+    -moz-box-shadow: 0 0 12px 1px rgba(66, 68, 90, 1);
+    box-shadow: 0 0 12px 1px rgba(66, 68, 90, 1);
     border-radius: 50%;
-    -webkit-box-shadow: 0px 0px 12px 1px rgba(66, 68, 90, 1);
-    -moz-box-shadow: 0px 0px 12px 1px rgba(66, 68, 90, 1);
-    box-shadow: 0px 0px 12px 1px rgba(66, 68, 90, 1);
-    transition: transform .5s;
+    transform: scale(1.2);
+    transition: transform .4s, background-color .4s;
 }
-
 
 .activity-page .place-date {
     display: flex;
@@ -119,14 +134,26 @@
 
 .activity-page .users {
     display: flex;
-    align-content: center;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: flex-start;
-    padding-left: 20px;
+    justify-content: left;
+    flex-direction: column;
 }
 
-.activity-page .users p {
+.activity-page .participant-info {
+    width: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    padding-left: 20px;
+    transition: transform .5s;
+}
+
+.activity-page .participant-info:hover {
+    transform: scale(1.2);
+    transition: transform .5s;
+    cursor: pointer;
+}
+
+.activity-page .participant-info p {
     padding-left: 20px;
 }
 
@@ -143,13 +170,22 @@
     border-radius: 10px;
     margin: 10px;
     cursor: pointer;
-    transition: transform .2s;
+    transition: transform .4s, background-color .4s;
 }
 
-.activity-page .info-users .icon:hover {
-    background-color: rgba(175, 175, 175, 0.91);
-    transform: scale(1.2);
-    transition: transform .3s;
+.activity-page-container {
+    background-color: #d5ffd0;
+}
+
+.activity-page {
+    background-color: white;
+    -webkit-box-shadow: 0 0 12px 1px rgba(66, 68, 90, 1);
+    -moz-box-shadow: 0 0 12px 1px rgba(66, 68, 90, 1);
+    box-shadow: 0 0 12px 1px rgba(66, 68, 90, 1);
+}
+
+.share-activity-methods button svg {
+    margin-left: 0;
 }
 
 .activity-page .google-maps {
@@ -165,3 +201,4 @@
     display: flex;
     justify-content: center;
 }
+

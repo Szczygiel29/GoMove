@@ -16,7 +16,7 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ImageService imageService;
+    private final UserImageService userImageService;
 
 
     public List<User> getAllUsers() {
@@ -60,8 +60,8 @@ public class UserService {
         }
         if (user.getUserPhoto() != null) {
             try {
-                imageService.removeImage(userToUpdate.getPhotoName());
-                userToUpdate.setPhotoName(imageService.uploadImage(user.getUserPhoto()));
+                userImageService.removeImage(userToUpdate.getPhotoName());
+                userToUpdate.setPhotoName(userImageService.uploadImage(user.getUserPhoto()));
             } catch (IOException exception) {
                 //TODO add logging exception, send info to frontend
                 exception.printStackTrace();

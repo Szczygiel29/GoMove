@@ -101,7 +101,7 @@
     width: 20%;
     border: none;
     font-size: 16px;
-    transition: transform .2s;
+    transition: transform .5s, background-color .5s;
     background-color: #D5FFD0;
     color: #2a2a2a;
     border-radius: 3px;
@@ -111,7 +111,7 @@
 
 .addButton:hover {
     transform: scale(1.2);
-    transition: transform .3s;
+    transition: transform .5s, background-color .5s;
     cursor: pointer;
     background-color: greenyellow;
 }

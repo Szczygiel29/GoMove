@@ -10,8 +10,7 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    width: 100%;
-    max-width: 500px;
+    width: 500px;
     border: 1px solid #ccc;
     padding: 40px;
     background-color: #f9f9f9;
@@ -30,7 +29,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 95%;
+    width: 500px;
 }
 
 .activity:hover, .activity-add:hover {
@@ -73,7 +72,8 @@
     margin: 0;
     font-weight: bold;
 }
-.description-input{
+
+.description-input {
     resize: none;
 }
 
@@ -82,7 +82,7 @@
 .description-input,
 .add-activity-form input[type="time"],
 .add-activity-form select {
-    width: 90%;
+    width: 480px;
     padding: 10px;
     margin-bottom: 15px;
     margin-top: 5px;
@@ -96,7 +96,7 @@
 }
 
 .submit-btn {
-    width: 95%;
+    width: 500px;
     background-color: lightgreen;
     color: #2a2a2a;
     border: none;
@@ -129,3 +129,20 @@
     font-weight: bold;
 }
 
+.add-activity-add-photo{
+    width: 500px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+.add-activity-add-photo button.custom-file-button{
+    margin-left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.activity-picture {
+    width: 200px;
+    object-fit: cover;
+    height: 200px;
+}
